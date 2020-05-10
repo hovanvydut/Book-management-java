@@ -17,7 +17,11 @@ public class Book {
 
     public Book(int bookID, String bookName, String author,
                 String specialization, int publishYear, int quantity) {
-        this.bookID = bookID;
+        if (bookID == 0) {
+            this.bookID = id++;
+        } else {
+            this.bookID = bookID;
+        }
         this.bookName = bookName;
         this.author = author;
         this.specialization = specialization;
@@ -79,6 +83,18 @@ public class Book {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "bookID=" + bookID +
+                ", bookName='" + bookName + '\'' +
+                ", author='" + author + '\'' +
+                ", specialization='" + specialization + '\'' +
+                ", publishYear=" + publishYear +
+                ", quantity=" + quantity +
+                '}';
     }
 }
 

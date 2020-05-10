@@ -3,8 +3,6 @@ package controller;
 import model.Book;
 import model.BookReaderManagement;
 import model.Reader;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,7 +18,7 @@ public class DataController {
     private Scanner scanner;
 
     // write file handle
-    public void openFileToWrite(String fileName) {
+    private void openFileToWrite(String fileName) {
         try {
             this.fileWriter = new FileWriter(fileName, true);
             this.bufferedWriter = new BufferedWriter(this.fileWriter);
@@ -52,7 +50,7 @@ public class DataController {
         closeFileAfterWrite(fileName);
     }
 
-    public void closeFileAfterWrite(String fileName) {
+    private void closeFileAfterWrite(String fileName) {
         try {
             this.printWriter.close();
             this.bufferedWriter.close();
@@ -63,7 +61,7 @@ public class DataController {
     }
 
     // read file handle
-    public void openFileToRead(String fileName) {
+    private void openFileToRead(String fileName) {
         try {
             this.scanner = new Scanner(Paths.get(fileName), "UTF-8");
         } catch(Exception e) {
@@ -71,7 +69,7 @@ public class DataController {
         }
     }
 
-    public void closeFileAfterRead(String fileName) {
+    private void closeFileAfterRead(String fileName) {
         try {
             scanner.close();
         } catch(Exception e) {
