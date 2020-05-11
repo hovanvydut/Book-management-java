@@ -2,6 +2,7 @@ package view;
 
 import controller.DataController;
 import model.Book;
+import model.BookReaderManagement;
 import model.Reader;
 
 import java.util.ArrayList;
@@ -12,9 +13,13 @@ public class View {
         int choice = 0;
         var bookFileName = "BOOK.DAT";
         var readersFileName = "READER.DAT";
+        var brmFileName = "BRM.DAT";
         var controller = new DataController();
+
         var books = new ArrayList<Book>();
         var readers = new ArrayList<Reader>();
+        var brms = new ArrayList<BookReaderManagement>();
+
         boolean isCheckedBook = false;
         boolean isReaderCheck = false;
 
@@ -25,6 +30,7 @@ public class View {
             System.out.println("2. Hiển thị danh sách các sách có trong file");
             System.out.println("3. Thêm một bạn đọc vào file");
             System.out.println("4. Hiển thị danh sách các bạn đọc có trong file");
+            System.out.println("5. Lập thông tin quản lý mượn");
             System.out.println("0. Thoát khỏi ứng dụng");
             System.out.println("Bạn chọn ?");
 
@@ -102,8 +108,43 @@ public class View {
                     showReaderInfo(readers);
                     break;
                 }
+                case 5: {
+                    readers = controller.readReadersFromFile(readersFileName);
+                    books = controller.readBooksFromFile(bookFileName);
+                    brms = controller.readBRMsFromFile(brmFileName);
+
+                    int readerID, bookID;
+                    boolean isBorrowable = false;
+                    do {
+                        showReaderInfo(readers);
+                        System.out.println("-----------------------------------");
+                        System.out.println("Nhập mã bạn đọc, nhập 0 để bỏ qua: ");
+                        readerID = scanner.nextInt();
+
+                        if (readerID == 0)
+                            break;
+
+                        isBorrowable = checkBorrowed(brms, readerID);
+                        if (isBorrowable)
+                            break;
+                        else
+                            System.out.println("Bạn đọc đã mượn đủ số lượng cho phép!");
+                    } while (true);
+                    break;
+                }
             }
         } while (choice != 0);
+    }
+
+    private static boolean checkBorrowed(ArrayList<BookReaderManagement> brms, int readerID) {
+        int count = 0;
+        for (var r : brms) {
+            if (r.getReader().getReaderId() == readerID)
+                count += r.getNumOfBorrow();
+        }
+
+        if (count >= 15) return false;
+        return true;
     }
 
     private static void showReaderInfo(ArrayList<Reader> readers) {
