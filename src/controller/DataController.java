@@ -3,10 +3,8 @@ package controller;
 import model.Book;
 import model.BookReaderManagement;
 import model.Reader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+
+import java.io.*;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -20,6 +18,11 @@ public class DataController {
     // write file handle
     private void openFileToWrite(String fileName) {
         try {
+            File file = new File(fileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
             this.fileWriter = new FileWriter(fileName, true);
             this.bufferedWriter = new BufferedWriter(this.fileWriter);
             this.printWriter = new PrintWriter(this.bufferedWriter);
@@ -63,6 +66,11 @@ public class DataController {
     // read file handle
     private void openFileToRead(String fileName) {
         try {
+            File file = new File(fileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
             this.scanner = new Scanner(Paths.get(fileName), "UTF-8");
         } catch(Exception e) {
             e.printStackTrace();
