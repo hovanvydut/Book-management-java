@@ -144,5 +144,17 @@ public class DataController {
         return brm;
     }
 
+    public void updateBRMFile(ArrayList<BookReaderManagement> brmList, String fileName) {
+        // xóa bỏ file cũ
+        File file = new File(fileName);
+        if (file.exists())
+            file.delete();
 
+        // ghi mới file
+        openFileToWrite(fileName);
+        for (var brm : brmList)
+            this.printWriter.println(brm.getReader().getReaderId() + "|" + brm.getBook().getBookID() + "|"
+                    + brm.getNumOfBorrow() + "|" + brm.getState());
+        closeFileAfterWrite(fileName);
+    }
 }

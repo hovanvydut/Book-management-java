@@ -1,5 +1,6 @@
 package view;
 
+import controller.ControllerUtility;
 import controller.DataController;
 import model.Book;
 import model.BookReaderManagement;
@@ -175,11 +176,42 @@ public class View {
                     String status = "";
                     status = scanner.nextLine();
 
+                    //
+                    Book currentBook = getBook(books, bookID);
+                    Reader currentReader = getReader(readers, readerID);
+                    BookReaderManagement b = new BookReaderManagement(currentBook, currentReader, total, status, 0);
 
+                    var ultility = new ControllerUtility();
+                    ultility.updateBRMsFile(brms, b); // cap nhat danh sach quan li muon
+                    controller.updateBRMFile(brms, brmFileName); // cap nhat file
+
+                    // show BRM info
+                    showBRMInfo(brms);
                     break;
                 }
             }
         } while (choice != 0);
+    }
+
+    private static void showBRMInfo(ArrayList<BookReaderManagement> brms) {
+        for (var brm : brms) {
+            System.out.println(brm.toString());
+        }
+    }
+
+    private static Reader getReader(ArrayList<Reader> readers, int readerID) {
+        for (Reader reader : readers)
+            if (reader.getReaderId() == readerID)
+                return reader;
+        return null;
+    }
+
+    private static Book getBook(ArrayList<Book> books, int bookID) {
+        for (Book book : books) {
+            if (book.getBookID() == bookID)
+                return book;
+        }
+        return null;
     }
 
     private static int getTotal(ArrayList<BookReaderManagement> brms, int readerID, int bookID) {

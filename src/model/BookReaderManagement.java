@@ -61,4 +61,15 @@ public class BookReaderManagement {
     public void setTotalBorrowed(int totalBorrowed) {
         this.totalBorrowed = totalBorrowed;
     }
+
+    @Override
+    public String toString() {
+        return "BRM{" +
+                "readerID=" + reader.getReaderId() +
+                ", bookID=" + book.getBookID() +
+                ", numOfBorrow=" + numOfBorrow +
+                ", state='" + state + '\'' +
+                ", totalBorrowed=" + totalBorrowed +
+                '}';
+    }
 }
