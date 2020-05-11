@@ -113,6 +113,8 @@ public class View {
                     books = controller.readBooksFromFile(bookFileName);
                     brms = controller.readBRMsFromFile(brmFileName);
 
+                    // chọn một bạn đọc từ danh sách để cho phép mượn,
+                    // nếu số lượng sách đã mượn của bạn đọc >= 15 thì không cho mượn
                     int readerID, bookID;
                     boolean isBorrowable = false;
                     do {
@@ -130,10 +132,70 @@ public class View {
                         else
                             System.out.println("Bạn đọc đã mượn đủ số lượng cho phép!");
                     } while (true);
+
+                    // chọn một đầu sách cần mượn, nếu danh sách đó đã cho mượn tối đa số cuốn cho phép thì
+                    // không được mượn tiếp, yêu cầu mượn sách khác.
+                    boolean isFullBook = false;
+                    do {
+                        showBookInfo(books);
+                        System.out.println("-----------------------------------");
+                        System.out.println("Nhập mã sách, nhập 0 để bỏ qua: ");
+                        bookID = scanner.nextInt();
+
+                        if (bookID == 0)
+                            break;
+
+                        isFullBook = isFullBook(brms, readerID, bookID);
+                        if (isFullBook) {
+                            System.out.println("Bạn đã vượt quá số lượng mượn đối với đầu sách này. " +
+                                    "Vui lòng chọn đầu sách khác!");
+                            continue;
+                        } else
+                            break;
+                    } while (true);
+
+                    // Nếu được phép được mượn tiếp thì thực hiện nhập số lượng mượn
+                    // tình trạng sách lúc mượn
+                    int total = getTotal(brms, readerID, bookID);
+                    do {
+                        System.out.println("Nhập số lượng mượn (đã mượn " + total
+                                + " ) (tối đa 3 quyển trên một đầu sách) : ");
+                        int x = scanner.nextInt();
+
+                        if ((x + total) >= 1 && (x + total) <= 3) {
+                            total += x;
+                            break;
+                        }
+                        else
+                            System.out.println("Nhập quá số lượng cho phép, vui lòng nhập lại!");
+                    } while (true);
+                    scanner.nextLine();
+
+                    System.out.println("Nhập tình trạng: ");
+                    String status = "";
+                    status = scanner.nextLine();
+
+
                     break;
                 }
             }
         } while (choice != 0);
+    }
+
+    private static int getTotal(ArrayList<BookReaderManagement> brms, int readerID, int bookID) {
+        for (var r : brms) {
+            if (r.getBook().getBookID() == bookID && r.getReader().getReaderId() == readerID)
+                return r.getNumOfBorrow();
+        }
+        return 0;
+    }
+
+    private static boolean isFullBook(ArrayList<BookReaderManagement> brms, int readerID, int bookID) {
+        for (var r : brms) {
+            if (r.getReader().getReaderId() == readerID && r.getBook().getBookID() == bookID && r.getNumOfBorrow() >= 3)
+                return true;
+        }
+        return false;
     }
 
     private static boolean checkBorrowed(ArrayList<BookReaderManagement> brms, int readerID) {
