@@ -126,22 +126,41 @@ public class DataController {
 
     // BRM
     public ArrayList<BookReaderManagement> readBRMsFromFile(String fileName) {
+        ArrayList<Book> books  = readBooksFromFile("BOOK.DAT");
+        ArrayList<Reader> readers = readReadersFromFile("READER.DAT");
+
         openFileToRead(fileName);
         ArrayList<BookReaderManagement> BRMs = new ArrayList<>();
         while (this.scanner.hasNextLine()) {
             String data = this.scanner.nextLine();
-            BookReaderManagement brm = createBRMFromData(data);
+            BookReaderManagement brm = createBRMFromData(data, readers, books);
             BRMs.add(brm);
         }
         closeFileAfterRead(fileName);
         return BRMs;
     }
 
-    public BookReaderManagement createBRMFromData(String data) {
+    public BookReaderManagement createBRMFromData(String data, ArrayList<Reader> readers,
+                                                  ArrayList<Book> books) {
         String[] datas = data.split("\\|");
-        BookReaderManagement brm = new BookReaderManagement(new Book(Integer.parseInt(datas[1])), new Reader(Integer.parseInt(datas[0])),
-                Integer.parseInt(datas[2]), datas[3], 0);
+        BookReaderManagement brm = new BookReaderManagement(getBook(books, Integer.parseInt(datas[1])),
+                getReader(readers, Integer.parseInt(datas[0])), Integer.parseInt(datas[2]), datas[3], 0);
         return brm;
+    }
+
+    private static Book getBook(ArrayList<Book> books, int bookID) {
+        for (Book book : books) {
+            if (book.getBookID() == bookID)
+                return book;
+        }
+        return null;
+    }
+
+    private static Reader getReader(ArrayList<Reader> readers, int readerID) {
+        for (Reader reader : readers)
+            if (reader.getReaderId() == readerID)
+                return reader;
+        return null;
     }
 
     public void updateBRMFile(ArrayList<BookReaderManagement> brmList, String fileName) {

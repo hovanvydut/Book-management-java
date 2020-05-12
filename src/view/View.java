@@ -16,6 +16,7 @@ public class View {
         var readersFileName = "READER.DAT";
         var brmFileName = "BRM.DAT";
         var controller = new DataController();
+        var ultility = new ControllerUtility();
 
         var books = new ArrayList<Book>();
         var readers = new ArrayList<Reader>();
@@ -32,8 +33,10 @@ public class View {
             System.out.println("3. Thêm một bạn đọc vào file");
             System.out.println("4. Hiển thị danh sách các bạn đọc có trong file");
             System.out.println("5. Lập thông tin quản lý mượn");
+            System.out.println("6. Sắp xếp");
             System.out.println("0. Thoát khỏi ứng dụng");
             System.out.println("Bạn chọn ?");
+
 
             choice = scanner.nextInt();
             scanner.nextLine();
@@ -120,7 +123,6 @@ public class View {
                     boolean isBorrowable = false;
                     do {
                         showReaderInfo(readers);
-                        System.out.println("-----------------------------------");
                         System.out.println("Nhập mã bạn đọc, nhập 0 để bỏ qua: ");
                         readerID = scanner.nextInt();
 
@@ -181,13 +183,40 @@ public class View {
                     Reader currentReader = getReader(readers, readerID);
                     BookReaderManagement b = new BookReaderManagement(currentBook, currentReader, total, status, 0);
 
-                    var ultility = new ControllerUtility();
                     ultility.updateBRMsFile(brms, b); // cap nhat danh sach quan li muon
                     controller.updateBRMFile(brms, brmFileName); // cap nhat file
 
                     // show BRM info
                     showBRMInfo(brms);
                     break;
+                }
+                case 6: {
+                    brms = controller.readBRMsFromFile(brmFileName);
+                    brms = ultility.updateTotalBorrow(brms);
+
+                    System.out.println("______________________________________________");
+                    do {
+                        System.out.println("__________________Các lựa chọn sắp xếp__________________");
+                        int x = 0;
+                        System.out.println("1. Sắp xếp theo tên bạn đọc ");
+                        System.out.println("2. Sắp xếp theo tổng số lượng mượn (giảm dần): ");
+                        System.out.println("0. Trở lại menu chính");
+                        x = scanner.nextInt();
+                        if (x == 0)
+                            break;
+                        switch (x) {
+                            case 1: {
+                                brms = ultility.sortByReaderName(brms);
+                                showBRMInfo(brms);
+                                break;
+                            }
+                            case 2: {
+                                brms = ultility.sortByNumOfBorrow(brms);
+                                showBRMInfo(brms);
+                                break;
+                            }
+                        }
+                    } while (true);
                 }
             }
         } while (choice != 0);

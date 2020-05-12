@@ -66,7 +66,9 @@ public class BookReaderManagement {
     public String toString() {
         return "BRM{" +
                 "readerID=" + reader.getReaderId() +
+                ", readerName=" + reader.getFullName() +
                 ", bookID=" + book.getBookID() +
+                ", bookName=" + book.getBookName() +
                 ", numOfBorrow=" + numOfBorrow +
                 ", state='" + state + '\'' +
                 ", totalBorrowed=" + totalBorrowed +
